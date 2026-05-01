@@ -51,6 +51,12 @@ Honesty rule: every gap surfaces here. Don't dress scaffold as finished work.
       design — Matt installs.
 - [ ] **Smoke test against the live cluster.** Cannot run from this agent
       session.
+- [ ] **Local pytest run during scaffold.** The Windows sandbox this scaffold
+      was built in could not execute python subprocesses to completion (pip
+      install + pytest runs hung without output capture). The tests are
+      well-formed and CI (`.github/workflows/ci.yml`) will validate them on
+      push. If a local test fails after Matt installs deps, the conftest.py
+      injects `src/` onto `sys.path` so tests work without `pip install -e .`.
 
 ## What Matt has to do (the 5 things)
 
