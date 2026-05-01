@@ -1,0 +1,89 @@
+# matt-box-control configuration
+# Copy this to %APPDATA%\matt-box\config.yaml and edit.
+# Daemon REFUSES TO START if bearer is the placeholder value.
+
+# Bearer token. The install script writes the real value here.
+# Manual install: paste the value of the cluster's `tardai-auth/bearer` secret.
+bearer: __SET_VIA_INSTALL_SCRIPT__
+
+# Bind address and port. Keep 127.0.0.1 — Tailscale exposes via `tailscale serve`.
+bind_host: 127.0.0.1
+bind_port: 8443
+
+# Where audit jsonl files live.
+audit_dir: C:\Users\mrjki\.tardai\audit
+
+# Where to push audit records (cluster artefact surface).
+# Leave null to log locally only.
+artefact_surface_url: null
+artefact_surface_bearer: null
+
+# Tool Bus base URL (cluster-side). Daemon registers manifest on startup.
+# Leave null to skip auto-registration.
+tool_bus_url: http://tardai-tool-bus.tardai.svc.cluster.local:8000
+
+# Override the kill-switch file location if you want.
+kill_switch_path: null  # defaults to %USERPROFILE%\.tardai\PAUSE
+
+# ---- ALLOWLIST -------------------------------------------------------------
+# Paths use glob patterns (** = recursive). Environment variables expanded.
+# Deny ALWAYS wins.
+
+allowlist:
+  paths:
+    read_allow:
+      - C:/Users/mrjki/Desktop/drwhom-overnight/**
+      - C:/Users/mrjki/.claude/**
+      - C:/Users/mrjki/.kube/**          # read-only, never written
+      - C:/Users/mrjki/.config/**
+      - "%USERPROFILE%/.config/**"
+
+    write_allow:
+      - C:/Users/mrjki/Desktop/drwhom-overnight/**
+      - C:/Users/mrjki/AppData/Local/Temp/matt-box/**
+
+    deny:
+      - "%APPDATA%/Microsoft/**"
+      - C:/Windows/**
+      - "C:/Program Files/**"
+      - "C:/Program Files (x86)/**"
+      - "**/.ssh/**"
+      - "**/.git/config"
+      - "**/credentials*"
+      - C:/Users/mrjki/Desktop/drwhom-overnight/**/.git/**
+
+    # These match within an allowlisted area but require the caller to send
+    # explicit_confirm: true on the request (in addition to the Tool Bus
+    # confirm gate).
+    require_explicit_confirm:
+      - "**/.env*"
+      - "**/secrets/**"
+
+  shell:
+    prefix_allow:
+      - kubectl
+      - gh
+      - gcloud
+      - git
+      - npm
+      - yarn
+      - node
+      - python
+      - poetry
+      - docker
+      - civo
+      - helm
+      - terraform
+      - tailscale
+
+    deny_regex:
+      - "rm\\s+-rf\\s+/"
+      - "rm\\s+-rf\\s+\\*"
+      - "del\\s+/s\\s+/q"
+      - "\\bformat\\b"
+      - "\\bshutdown\\b"
+      - "\\bsudo\\b"
+      - "\\brunas\\b"
+      - ":\\(\\)\\s*\\{\\s*:\\|:&\\s*\\};:"
+      - "Invoke-Expression"
+      - "iex\\s+"

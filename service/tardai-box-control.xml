@@ -1,0 +1,23 @@
+<!--
+  WinSW-compatible service descriptor for matt-box-control.
+  Use this if you prefer WinSW (https://github.com/winsw/winsw) over NSSM.
+
+  Place WinSW.exe alongside this XML, rename both to matt-box-control.exe / .xml,
+  then run: matt-box-control.exe install
+-->
+<service>
+  <id>matt-box-control</id>
+  <name>TARDAI matt-box-control</name>
+  <description>Sovereign hands on Matt's Windows box. Filesystem/shell/browser ops with allowlist + audit.</description>
+  <executable>python</executable>
+  <arguments>-m matt_box.daemon</arguments>
+  <env name="MATT_BOX_CONFIG" value="%APPDATA%\matt-box\config.yaml" />
+  <env name="MATT_BOX_LOG_LEVEL" value="INFO" />
+  <logmode>roll-by-size</logmode>
+  <logpath>%APPDATA%\matt-box\logs</logpath>
+  <onfailure action="restart" delay="10 sec" />
+  <onfailure action="restart" delay="30 sec" />
+  <onfailure action="none" />
+  <resetfailure>1 hour</resetfailure>
+  <startmode>Automatic</startmode>
+</service>

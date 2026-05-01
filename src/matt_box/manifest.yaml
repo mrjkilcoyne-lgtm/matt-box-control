@@ -1,0 +1,29 @@
+id: matt-box-control
+title: Matt's Windows machine — embodied control
+description: Filesystem, shell, browser ops on Matt's primary Windows box. Sovereign's body in the physical world.
+version: 0.1.0
+schema_in:
+  action: "fs.read|fs.write|fs.list|fs.search|shell.run|browser.open|browser.query"
+  args: object
+  caller: string
+schema_out:
+  status: "ok|blocked|paused|error"
+  result: object
+  audit_id: string
+blast_radius: write-external
+data_sensitivity: matt-pii
+rate_limit_per_min: 30
+estimated_cost: zero
+endpoint: https://mattkilcoyne.tail-scale-magic-dns.ts.net:8443/invoke
+plan_endpoint: https://mattkilcoyne.tail-scale-magic-dns.ts.net:8443/plan
+health_endpoint: https://mattkilcoyne.tail-scale-magic-dns.ts.net:8443/health
+deprecated: false
+owner: claude
+required_confirm_tier: on
+audit_surface: _meta/audit/matt-box-control/
+governance:
+  confirm_gate: ON
+  kill_switch_file: "%USERPROFILE%/.tardai/PAUSE"
+  audit_first: true
+  bind_local_only: true
+  bearer_required: true
